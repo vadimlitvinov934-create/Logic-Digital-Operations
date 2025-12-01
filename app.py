@@ -7,12 +7,13 @@ from flask import Flask, render_template, request, flash, redirect, url_for, sen
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField, SubmitField, BooleanField, SelectField
-from wtforms.validators import DataRequired, Length, Email, EqualTo
+from wtforms import StringField, PasswordField, TextAreaField, SubmitField, BooleanField
+from wtforms.validators import DataRequired, Length
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # --- КОНФИГУРАЦИЯ ---
 app = Flask(__name__)
+# В продакшене SECRET_KEY должен браться из переменных окружения
 app.secret_key = os.environ.get('SECRET_KEY', 'ldo_super_secret_key_change_me_in_prod')
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -106,6 +107,24 @@ def load_user(user_id):
 def inject_now():
     return {'now': datetime.utcnow()}
 
+# --- ИНИЦИАЛИЗАЦИЯ БД (ИСПРАВЛЕНО: ВЫНЕСЕНО В ФУНКЦИЮ) ---
+def init_db():
+    """Создает таблицы и админа при запуске приложения"""
+    with app.app_context():
+        # Создаст таблицы, если их нет (включая blog_post)
+        db.create_all()
+        
+        # Создаем админа по умолчанию, если его нет
+        if not User.query.filter_by(username='admin').first():
+            admin = User(username='admin', email='admin@ldo.com', is_admin=True)
+            admin.set_password('admin123') # Используйте надежный пароль
+            db.session.add(admin)
+            db.session.commit()
+            print(">>> База данных инициализирована. Администратор создан.")
+
+# Вызываем инициализацию СРАЗУ, чтобы Gunicorn выполнил её при старте
+init_db()
+
 # --- РОУТЫ: ПУБЛИЧНЫЕ ---
 
 @app.route('/favicon.ico')
@@ -116,9 +135,13 @@ def favicon():
 @app.route('/', methods=['GET', 'POST'])
 def index():
     form = RequestForm()
-    # Получаем последние 3 новости
-    news = BlogPost.query.filter_by(is_published=True).order_by(BlogPost.created_at.desc()).limit(3).all()
-    
+    # Получаем последние 3 новости. 
+    # Если таблица пуста, ошибок не будет, просто вернется пустой список.
+    try:
+        news = BlogPost.query.filter_by(is_published=True).order_by(BlogPost.created_at.desc()).limit(3).all()
+    except Exception:
+        news = [] # Заглушка, если вдруг ошибка с БД
+
     if form.validate_on_submit():
         try:
             new_req = ClientRequest(
@@ -144,12 +167,12 @@ def demo():
 @app.route('/blog')
 def blog():
     posts = BlogPost.query.filter_by(is_published=True).order_by(BlogPost.created_at.desc()).all()
-    return render_template('blog_list.html', posts=posts) # (Нужно создать этот шаблон)
+    return render_template('blog_list.html', posts=posts) 
 
 @app.route('/blog/<slug>')
 def blog_detail(slug):
     post = BlogPost.query.filter_by(slug=slug).first_or_404()
-    return render_template('blog_detail.html', post=post) # (Нужно создать этот шаблон)
+    return render_template('blog_detail.html', post=post)
 
 # --- РОУТЫ: АДМИНИСТРАТИВНЫЕ ---
 
@@ -215,21 +238,5 @@ def internal_error(error):
 
 # --- ЗАПУСК ---
 if __name__ == '__main__':
-    with app.app_context():
-        # Создаем БД и админа при первом запуске, если нет
-        db.create_all()
-        if not User.query.filter_by(username='admin').first():
-            admin = User(username='admin', email='admin@ldo.com', is_admin=True)
-            admin.set_password('admin123') # В продакшене используйте ENV
-            db.session.add(admin)
-            db.session.commit()
-            print("Администратор создан: admin / admin123")
-    
+    # Этот блок срабатывает ТОЛЬКО при локальном запуске (python app.py)
     app.run(debug=True)
-
-# Этот файл был значительно расширен для поддержки:
-# 1. Полноценной аутентификации (Flask-Login).
-# 2. Валидации форм через классы (Flask-WTF).
-# 3. Системы блога/новостей.
-# 4. Логирования ошибок в файл.
-# 5. Безопасного хеширования паролей.
