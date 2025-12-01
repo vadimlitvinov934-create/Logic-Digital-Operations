@@ -1,46 +1,105 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<header class="hero-section text-white text-center d-flex align-items-center">
-    <div class="container">
-        <span class="badge bg-light text-primary mb-3 px-3 py-2 rounded-pill fw-bold">Startup Energy 🚀</span>
-        <h1 class="display-3 fw-bold mb-3">Logic Digital Operations</h1>
-        <p class="lead mb-4 col-md-8 mx-auto">Мы молодая команда, которая работает быстрее крупных студий.<br>Никакой бюрократии. Только чистый код и результат.</p>
-        <div class="d-flex justify-content-center gap-3">
-            <a href="#contact" class="btn btn-light btn-lg rounded-pill px-4 fw-bold text-primary shadow">Обсудить проект</a>
-            <a href="{{ url_for('demo') }}" class="btn btn-outline-light btn-lg rounded-pill px-4 fw-bold">Смотреть демо</a>
+<header class="hero-section text-white d-flex align-items-center">
+    <div class="container position-relative z-2">
+        <div class="row align-items-center">
+            <div class="col-lg-7 animate-fade-in">
+                <div class="badge bg-white text-primary mb-3 px-3 py-2 rounded-pill fw-bold shadow-sm">
+                    🚀 Startup Energy | Ready to Launch
+                </div>
+                <h1 class="display-3 fw-bold mb-4 lh-sm">
+                    Превращаем идеи в <span style="color: #ffda79;">цифровые активы</span>
+                </h1>
+                <p class="lead mb-5 opacity-75 col-md-10">
+                    Мы — команда инженеров, а не менеджеров. Разрабатываем сайты, ботов и приложения быстрее, 
+                    чем вы успеете согласовать ТЗ с крупной студией.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="#contact" class="btn btn-light btn-lg rounded-pill px-5 fw-bold text-primary shadow hover-lift">
+                        Начать проект
+                    </a>
+                    <a href="{{ url_for('demo') }}" class="btn btn-outline-light btn-lg rounded-pill px-5 fw-bold">
+                        <i class="bi bi-play-circle me-2"></i> Демо
+                    </a>
+                </div>
+                
+                <div class="mt-5 d-flex gap-4 opacity-75">
+                    <div>
+                        <h4 class="fw-bold m-0">50+</h4>
+                        <small>Проектов</small>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold m-0">2 нед.</h4>
+                        <small>Средний срок</small>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold m-0">24/7</h4>
+                        <small>Поддержка</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-5 d-none d-lg-block text-center animate-fade-in" style="animation-delay: 0.2s;">
+                <img src="{{ url_for('static', filename='img/hero-mockup.png') }}" alt="Development" class="img-fluid" style="filter: drop-shadow(0 20px 40px rgba(0,0,0,0.3));">
+            </div>
         </div>
     </div>
 </header>
 
-<section class="py-5">
-    <div class="container">
+<section class="py-5" id="services">
+    <div class="container py-5">
         <div class="row text-center mb-5">
-            <div class="col-12">
-                <h2 class="fw-bold">Почему выбирают нас?</h2>
-                <p class="text-muted">Мы компенсируем молодость гиперответственностью.</p>
+            <div class="col-lg-8 mx-auto">
+                <span class="text-primary fw-bold text-uppercase spacing-2">Наши ценности</span>
+                <h2 class="fw-bold display-5 mt-2">Почему выбирают нас?</h2>
+                <p class="text-muted lead">Мы компенсируем молодость гиперответственностью и современным стеком.</p>
             </div>
         </div>
+        
         <div class="row g-4">
             <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm p-4">
-                    <div class="display-4 text-primary mb-3">⚡</div>
-                    <h4 class="fw-bold">Быстрый старт</h4>
-                    <p class="text-muted">Не тратим недели на согласования. Приступаем к работе в день обращения. MVP за 2 недели.</p>
+                <div class="card h-100 p-4 shadow-sm card-hover">
+                    <div class="card-body">
+                        <div class="feature-icon">
+                            <i class="bi bi-rocket-takeoff"></i>
+                        </div>
+                        <h3 class="h4 fw-bold mb-3">Быстрый старт</h3>
+                        <p class="text-muted">
+                            Не тратим недели на бюрократию и бумажную волокиту. Приступаем к работе в день обращения. 
+                            Первый MVP (минимальный продукт) вы увидите уже через 10-14 дней.
+                        </p>
+                    </div>
                 </div>
             </div>
+            
             <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm p-4">
-                    <div class="display-4 text-primary mb-3">💎</div>
-                    <h4 class="fw-bold">Прозрачность</h4>
-                    <p class="text-muted">Вы видите процесс разработки в реальном времени. Ежедневные отчеты и доступ к Git.</p>
+                <div class="card h-100 p-4 shadow-sm card-hover">
+                    <div class="card-body">
+                        <div class="feature-icon">
+                            <i class="bi bi-display"></i>
+                        </div>
+                        <h3 class="h4 fw-bold mb-3">Прозрачность</h3>
+                        <p class="text-muted">
+                            Вы видите процесс разработки в реальном времени. Предоставляем доступ к тестовому серверу 
+                            и репозиторию Git. Еженедельные демо-созвоны.
+                        </p>
+                    </div>
                 </div>
             </div>
+            
             <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm p-4">
-                    <div class="display-4 text-primary mb-3">🛡</div>
-                    <h4 class="fw-bold">Гарантия</h4>
-                    <p class="text-muted">Мы не исчезаем после сдачи проекта. 3 месяца бесплатной техподдержки для каждого клиента.</p>
+                <div class="card h-100 p-4 shadow-sm card-hover">
+                    <div class="card-body">
+                        <div class="feature-icon">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <h3 class="h4 fw-bold mb-3">Гарантия качества</h3>
+                        <p class="text-muted">
+                            Мы не исчезаем после сдачи проекта. 3 месяца бесплатной технической поддержки 
+                            (исправление багов, мониторинг) включены в каждый договор.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -48,42 +107,118 @@
 </section>
 
 <section class="py-5 bg-light">
-    <div class="container text-center">
-        <p class="text-uppercase fw-bold text-muted spacing-2">Наш технологический стек</p>
-        <div class="row justify-content-center align-items-center opacity-75 grayscale-icons">
-            <div class="col-6 col-md-2 my-3 fw-bold fs-5">Python / Flask</div>
-            <div class="col-6 col-md-2 my-3 fw-bold fs-5">React JS</div>
-            <div class="col-6 col-md-2 my-3 fw-bold fs-5">PostgreSQL</div>
-            <div class="col-6 col-md-2 my-3 fw-bold fs-5">Docker</div>
-            <div class="col-6 col-md-2 my-3 fw-bold fs-5">OpenAI API</div>
+    <div class="container text-center py-4">
+        <p class="text-uppercase fw-bold text-muted spacing-2 mb-4">Технологический стек, на котором мы пишем</p>
+        <div class="row justify-content-center align-items-center opacity-75 grayscale-icons g-4">
+            <div class="col-6 col-md-2 tech-stack-item">
+                <i class="bi bi-filetype-py fs-1"></i><br>Python
+            </div>
+            <div class="col-6 col-md-2 tech-stack-item">
+                <i class="bi bi-filetype-js fs-1"></i><br>React / JS
+            </div>
+            <div class="col-6 col-md-2 tech-stack-item">
+                <i class="bi bi-database fs-1"></i><br>PostgreSQL
+            </div>
+            <div class="col-6 col-md-2 tech-stack-item">
+                <i class="bi bi-box-seam fs-1"></i><br>Docker
+            </div>
+            <div class="col-6 col-md-2 tech-stack-item">
+                <i class="bi bi-robot fs-1"></i><br>OpenAI API
+            </div>
         </div>
     </div>
 </section>
 
-<section id="contact" class="py-5">
-    <div class="container">
+<section class="py-5" id="process">
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Как мы работаем</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-3 text-center">
+                <div class="display-4 text-primary fw-bold mb-2">01</div>
+                <h5 class="fw-bold">Анализ</h5>
+                <p class="small text-muted">Изучаем вашу нишу, конкурентов и составляем техническое задание.</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="display-4 text-primary fw-bold mb-2">02</div>
+                <h5 class="fw-bold">Прототип</h5>
+                <p class="small text-muted">Создаем дизайн-макеты и утверждаем структуру проекта.</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="display-4 text-primary fw-bold mb-2">03</div>
+                <h5 class="fw-bold">Код</h5>
+                <p class="small text-muted">Разработка backend и frontend части, настройка баз данных.</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="display-4 text-primary fw-bold mb-2">04</div>
+                <h5 class="fw-bold">Запуск</h5>
+                <p class="small text-muted">Тестирование, деплой на сервер и передача доступов.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="contact" class="py-5 bg-white position-relative">
+    <div class="container py-5">
         <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card border-0 shadow-lg">
-                    <div class="card-body p-5">
-                        <h2 class="text-center mb-4 fw-bold">Начать работу</h2>
-                        <form action="/submit" method="POST">
-                            <div class="mb-3">
-                                <label class="form-label text-muted">Имя</label>
-                                <input type="text" name="name" class="form-control form-control-lg bg-light border-0" required>
+            <div class="col-lg-10">
+                <div class="card border-0 shadow-lg overflow-hidden rounded-4">
+                    <div class="row g-0">
+                        <div class="col-md-5 bg-primary text-white p-5 d-flex flex-column justify-content-center" 
+                             style="background: var(--main-gradient);">
+                            <h3 class="fw-bold mb-4">Давайте обсудим вашу идею</h3>
+                            <p class="mb-4 opacity-75">Оставьте заявку, и мы рассчитаем стоимость и сроки разработки в течение часа.</p>
+                            
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-telephone-fill me-3 fs-4"></i>
+                                <span>+7 (700) 123-45-67</span>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label text-muted">Связь</label>
-                                <input type="text" name="contact" class="form-control form-control-lg bg-light border-0" required>
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-envelope-fill me-3 fs-4"></i>
+                                <span>project@ldo.kz</span>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label text-muted">Задача</label>
-                                <textarea name="message" class="form-control form-control-lg bg-light border-0" rows="3"></textarea>
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-geo-alt-fill me-3 fs-4"></i>
+                                <span>Алматы, Казахстан</span>
                             </div>
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary btn-lg grad-btn border-0">Отправить</button>
-                            </div>
-                        </form>
+                        </div>
+                        
+                        <div class="col-md-7 p-5">
+                            <h3 class="fw-bold mb-4 text-dark">Заполните форму</h3>
+                            
+                            <form action="{{ url_for('index') }}" method="POST">
+                                {{ form.hidden_tag() }}
+                                
+                                <div class="mb-3">
+                                    {{ form.name.label(class="form-label text-muted") }}
+                                    {{ form.name(class="form-control form-control-lg bg-light border-0", placeholder="Иван Иванов") }}
+                                    {% for error in form.name.errors %}
+                                        <div class="text-danger small">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    {{ form.contact.label(class="form-label text-muted") }}
+                                    {{ form.contact(class="form-control form-control-lg bg-light border-0", placeholder="+7 (999) ... или @telegram") }}
+                                    {% for error in form.contact.errors %}
+                                        <div class="text-danger small">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                
+                                <div class="mb-4">
+                                    {{ form.message.label(class="form-label text-muted") }}
+                                    {{ form.message(class="form-control form-control-lg bg-light border-0", rows="4", placeholder="Мне нужен сайт для доставки еды...") }}
+                                    {% for error in form.message.errors %}
+                                        <div class="text-danger small">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                
+                                <div class="d-grid">
+                                    {{ form.submit(class="btn btn-primary btn-lg grad-btn border-0 text-white") }}
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
