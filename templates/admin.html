@@ -7,59 +7,78 @@
     <style>
         body { font-family: 'Manrope', sans-serif; background: #f1f5f9; color: #0f172a; padding: 40px; }
         
-        .container { max-width: 1000px; margin: 0 auto; }
+        .container { max-width: 1200px; margin: 0 auto; }
         
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-        h1 { font-size: 2rem; }
-        .badge { background: #2563eb; color: white; padding: 5px 15px; border-radius: 20px; font-size: 1rem; }
+        /* Хедер и навигация */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        h1 { font-size: 2rem; margin: 0; }
+        
+        .admin-controls { display: flex; align-items: center; gap: 20px; }
+        .logout-link { color: #dc2626; text-decoration: none; font-weight: 600; border: 1px solid #dc2626; padding: 8px 15px; border-radius: 6px; transition: 0.3s; }
+        .logout-link:hover { background: #dc2626; color: white; }
 
         /* Карточки статистики */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
-        .stat-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .stat-card h3 { color: #64748b; font-size: 0.9rem; margin-bottom: 10px; text-transform: uppercase; }
-        .stat-card .value { font-size: 2.5rem; font-weight: 800; color: #0f172a; }
+        .stats-bar { display: flex; gap: 15px; margin-bottom: 30px; }
+        .stat-badge { background: white; padding: 10px 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-weight: 600; color: #64748b; }
+        .stat-badge strong { color: #0f172a; font-size: 1.2rem; margin-left: 5px; }
+        .stat-badge.alert { color: #dc2626; }
+        .stat-badge.alert strong { color: #dc2626; }
 
         /* Таблица */
-        .table-container { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .table-container { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 15px 20px; text-align: left; border-bottom: 1px solid #e2e8f0; }
-        th { background: #f8fafc; font-weight: 600; color: #64748b; font-size: 0.9rem; }
+        
+        th, td { padding: 15px 20px; text-align: left; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+        th { background: #f8fafc; font-weight: 700; color: #475569; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
         tr:last-child td { border-bottom: none; }
-        tr:hover { background-color: #f8fafc; }
+        
+        /* Статусы строк */
+        tr.read { background-color: #ffffff; }
+        tr.unread { background-color: #eff6ff; border-left: 4px solid #2563eb; } /* Подсветка новых */
+        tr:hover { background-color: #f1f5f9; }
 
+        /* Элементы внутри таблицы */
+        .date-time { font-size: 0.85rem; color: #94a3b8; }
+        .sender-info { font-weight: 600; }
+        .sender-contact { font-size: 0.9rem; color: #64748b; font-weight: 400; }
+        
         .tag { 
-            padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; 
-            background: #e0f2fe; color: #0369a1;
+            padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; 
+            background: #e0f2fe; color: #0369a1; text-transform: uppercase;
         }
+
+        /* Кнопки действий */
+        .actions { display: flex; gap: 10px; }
+        .btn-action { 
+            padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 0.85rem; font-weight: 600; transition: 0.2s; display: inline-block;
+        }
+        .btn-check { background: #dcfce7; color: #166534; }
+        .btn-check:hover { background: #bbf7d0; }
         
-        .empty-state { padding: 40px; text-align: center; color: #94a3b8; }
-        
-        .return-link { display: inline-block; margin-top: 20px; color: #2563eb; text-decoration: none; }
+        .btn-new { background: #dbeafe; color: #1e40af; } /* Кнопка "Отметить новым" */
+        .btn-new:hover { background: #bfdbfe; }
+
+        .btn-del { background: #fee2e2; color: #991b1b; }
+        .btn-del:hover { background: #fecaca; }
+
+        /* Пустое состояние */
+        .empty-state { padding: 60px; text-align: center; color: #94a3b8; }
+        .return-link { display: inline-block; margin-top: 20px; color: #2563eb; text-decoration: none; font-weight: 600; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1>Панель Администратора (VadimAdmin)</h1>
-        <span class="badge">Всего заявок: {{ total }}</span>
+        <h1>LDO Admin</h1>
+        <div class="admin-controls">
+            <a href="/logout" class="logout-link">Выйти</a>
+        </div>
     </div>
 
-    <div class="stats-grid">
-        <div class="stat-card">
-            <h3>Активные лиды</h3>
-            <div class="value">{{ total }}</div>
-        </div>
-        <div class="stat-card">
-            <h3>Топ отправитель</h3>
-            <div class="value">
-                {% if stats %}
-                    {{ stats[0][0] }} <span style="font-size: 1rem; color: #2563eb;">({{ stats[0][1] }})</span>
-                {% else %}
-                    —
-                {% endif %}
-            </div>
-        </div>
+    <div class="stats-bar">
+        <div class="stat-badge">Всего заявок: <strong>{{ total }}</strong></div>
+        <div class="stat-badge {{ 'alert' if unread > 0 }}">Новых: <strong>{{ unread }}</strong></div>
     </div>
 
     <div class="table-container">
@@ -67,37 +86,54 @@
         <table>
             <thead>
                 <tr>
-                    <th>ID / Время</th>
-                    <th>Имя / Email</th>
+                    <th>Статус / Дата</th>
+                    <th>Отправитель</th>
                     <th>Категория</th>
                     <th>Сообщение</th>
+                    <th>Действия</th>
                 </tr>
             </thead>
             <tbody>
                 {% for msg in messages %}
-                <tr>
+                <tr class="{{ 'read' if msg.is_read else 'unread' }}">
                     <td>
-                        <strong>#{{ msg.id }}</strong><br>
-                        <span style="font-size: 0.8rem; color: #94a3b8;">{{ msg.time }}</span>
+                        {% if not msg.is_read %}
+                            <span style="color: #2563eb; font-weight: 800; font-size: 0.8rem;">● NEW</span><br>
+                        {% else %}
+                            <span style="color: #94a3b8; font-size: 0.8rem;">✓ Read</span><br>
+                        {% endif %}
+                        <span class="date-time">{{ msg.date.strftime('%d.%m %H:%M') }}</span>
                     </td>
                     <td>
-                        {{ msg.name }}<br>
-                        <span style="color: #64748b;">{{ msg.email }}</span>
+                        <div class="sender-info">{{ msg.name }}</div>
+                        <div class="sender-contact">{{ msg.contact }}</div>
                     </td>
                     <td><span class="tag">{{ msg.category }}</span></td>
-                    <td style="max-width: 300px;">{{ msg.message }}</td>
+                    <td style="max-width: 350px; line-height: 1.4;">{{ msg.message }}</td>
+                    <td>
+                        <div class="actions">
+                            <a href="/toggle_read/{{ msg.id }}" class="btn-action {{ 'btn-new' if msg.is_read else 'btn-check' }}">
+                                {{ 'Сделать новым' if msg.is_read else '✓ В архив' }}
+                            </a>
+                            
+                            <a href="/delete/{{ msg.id }}" class="btn-action btn-del" onclick="return confirm('Вы уверены, что хотите удалить эту заявку?');">
+                                🗑
+                            </a>
+                        </div>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
         {% else %}
         <div class="empty-state">
-            Заявок пока нет. Отправьте тестовую заявку с главной страницы.
+            <h3>Заявок пока нет</h3>
+            <p>Новые сообщения с сайта будут появляться здесь.</p>
         </div>
         {% endif %}
     </div>
     
-    <a href="/" class="return-link">← Вернуться на сайт</a>
+    <a href="/" class="return-link">← Вернуться на главную сайта</a>
 </div>
 
 </body>

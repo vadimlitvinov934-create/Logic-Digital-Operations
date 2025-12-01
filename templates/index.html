@@ -9,9 +9,9 @@
         /* --- ПЕРЕМЕННЫЕ (Светлая тема) --- */
         :root {
             --bg-body: #ffffff;
-            --bg-secondary: #f8fafc; /* Очень светло-серый */
-            --primary: #0f172a; /* Темно-синий (почти черный) для текста */
-            --accent: #2563eb; /* Яркий синий (Royal Blue) */
+            --bg-secondary: #f8fafc;
+            --primary: #0f172a;
+            --accent: #2563eb;
             --accent-hover: #1d4ed8;
             --text-gray: #64748b;
             --border-color: #e2e8f0;
@@ -25,6 +25,7 @@
             background-color: var(--bg-body);
             color: var(--primary);
             line-height: 1.6;
+            overflow-x: hidden; /* Скрываем гориз. прокрутку */
         }
 
         a { text-decoration: none; color: inherit; transition: 0.3s; }
@@ -62,13 +63,18 @@
             padding: 10px 20px;
             border-radius: 6px;
         }
-        .btn-nav:hover { background-color: var(--accent); }
+        .btn-nav:hover { background-color: var(--accent); transform: translateY(-2px); }
 
         /* --- HERO SECTION --- */
         .hero {
             padding: 180px 5% 100px;
             text-align: center;
             background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+            min-height: 90vh; /* Чтобы занимало почти весь экран */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .hero h1 {
@@ -80,11 +86,32 @@
             letter-spacing: -1px;
         }
         
+        /* Стили для печатной машинки */
         .hero p {
-            font-size: 1.25rem;
+            font-size: 1.5rem; /* Чуть крупнее */
             color: var(--text-gray);
-            max-width: 700px;
+            max-width: 800px;
             margin: 0 auto 40px;
+            min-height: 3.2rem; /* Чтобы текст не прыгал */
+        }
+
+        .typewriter-text {
+            color: var(--accent);
+            font-weight: 800;
+            border-bottom: 2px solid transparent;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            background-color: var(--accent);
+            animation: blink 1s infinite;
+            margin-left: 5px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
 
         .btn-main {
@@ -96,15 +123,15 @@
             font-weight: 600;
             border-radius: 8px;
             box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.3s ease;
         }
         .btn-main:hover {
             background-color: var(--accent-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px -5px rgba(37, 99, 235, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -5px rgba(37, 99, 235, 0.6);
         }
 
-        /* --- SERVICES --- */
+        /* --- SERVICES (С анимацией появления) --- */
         .section { padding: 100px 5%; }
         .bg-gray { background-color: var(--bg-secondary); }
         
@@ -124,11 +151,24 @@
             border-radius: 12px;
             border: 1px solid var(--border-color);
             transition: 0.3s;
+            opacity: 0; /* Скрыто по умолчанию для анимации */
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s forwards;
         }
+        
+        /* Задержка анимации для каждой карточки */
+        .card:nth-child(1) { animation-delay: 0.2s; }
+        .card:nth-child(2) { animation-delay: 0.4s; }
+        .card:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .card:hover {
             box-shadow: var(--shadow);
             border-color: var(--accent);
-            transform: translateY(-5px);
+            transform: translateY(-10px);
         }
         
         .icon-box {
@@ -198,16 +238,19 @@
         }
         footer p { opacity: 0.6; font-size: 0.9rem; }
 
-        /* Flash Message */
         .alert {
             max-width: 600px; margin: 20px auto; padding: 15px;
             border-radius: 8px; text-align: center; font-weight: 600;
+            position: fixed; top: 100px; left: 50%; transform: translateX(-50%); z-index: 2000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
-        .alert-success { background-color: #dcfce7; color: #166534; }
+        .alert-success { background-color: #dcfce7; color: #166534; border: 1px solid #166534; }
+        .alert-error { background-color: #fee2e2; color: #991b1b; border: 1px solid #991b1b; }
 
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.5rem; }
             .form-container { padding: 30px 20px; }
+            .hero { padding-top: 140px; }
         }
     </style>
 </head>
@@ -217,14 +260,17 @@
         <div class="logo">LDO<span>.</span></div>
         <div class="nav-links">
             <a href="#services">Услуги</a>
-            <a href="#about">О нас</a>
             <a href="#contact" class="btn-nav">Обсудить проект</a>
         </div>
     </nav>
 
     <section class="hero">
         <h1>Logic Digital Operations</h1>
-        <p>Мы создаем цифровые экосистемы, которые приносят прибыль. <br>Веб-разработка, мобильные приложения и автоматизация бизнеса.</p>
+        
+        <p>
+            Мы создаем: <span class="typewriter-text"></span><span class="cursor">&nbsp;</span>
+        </p>
+
         <a href="#contact" class="btn-main">Начать трансформацию</a>
     </section>
 
@@ -245,7 +291,7 @@
             <div class="card">
                 <div class="icon-box">💻</div>
                 <h3>Веб-Разработка</h3>
-                <p>Корпоративные порталы и SaaS решения. Мы используем Python и React для создания быстрых систем.</p>
+                <p>Корпоративные порталы и SaaS решения. Используем Python и React для быстрых и безопасных систем.</p>
             </div>
             <div class="card">
                 <div class="icon-box">📱</div>
@@ -255,7 +301,7 @@
             <div class="card">
                 <div class="icon-box">📊</div>
                 <h3>IT Консалтинг</h3>
-                <p>Аудит текущих процессов и внедрение цифровой логики для сокращения издержек.</p>
+                <p>Аудит текущих процессов и внедрение цифровой логики для сокращения издержек компании.</p>
             </div>
         </div>
     </section>
@@ -296,6 +342,48 @@
     <footer>
         <p>&copy; 2024 LDO — Logic Digital Operations. Все права защищены.</p>
     </footer>
+
+    <script>
+        const textElement = document.querySelector('.typewriter-text');
+        const phrases = [
+            "Цифровые Экосистемы", 
+            "Веб-сайты для бизнеса", 
+            "Мобильные Приложения", 
+            "IT Стратегии"
+        ];
+        
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        function type() {
+            const currentPhrase = phrases[phraseIndex];
+            
+            if (isDeleting) {
+                textElement.textContent = currentPhrase.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                textElement.textContent = currentPhrase.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 50 : 100;
+
+            if (!isDeleting && charIndex === currentPhrase.length) {
+                isDeleting = true;
+                typeSpeed = 2000; // Пауза перед удалением (2 сек)
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                typeSpeed = 500; // Пауза перед новым словом
+            }
+
+            setTimeout(type, typeSpeed);
+        }
+
+        // Запуск при загрузке
+        document.addEventListener('DOMContentLoaded', type);
+    </script>
 
 </body>
 </html>

@@ -2,12 +2,28 @@ from flask import Flask, render_template, request, flash, redirect, url_for, ses
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import pyrebase
+import requests # Добавили для Телеграма
 import os
 
 app = Flask(__name__)
 app.secret_key = 'ldo_super_secret_key'
 
-# --- 1. КОНФИГУРАЦИЯ FIREBASE (ТВОИ КЛЮЧИ) ---
+# --- НАСТРОЙКИ TELEGRAM (ЗАПОЛНИ ЭТО!) ---
+# 1. Найди в Telegram бота @BotFather, создай бота, получи токен.
+TELEGRAM_TOKEN = "ВАШ_ТОКЕН_ОТ_BOTFATHER"
+# 2. Найди бота @userinfobot, нажми Start, он скажет твой ID (цифры).
+TELEGRAM_CHAT_ID = "ВАШ_CHAT_ID"
+
+def send_telegram_notification(name, contact, category, message):
+    if "ВАШ" in TELEGRAM_TOKEN: return # Если не настроил — пропускаем
+    try:
+        text = f"🚀 <b>Новая заявка LDO!</b>\n\n👤 <b>Имя:</b> {name}\n📧 <b>Контакт:</b> {contact}\nBg <b>Тип:</b> {category}\n📝 <b>Сообщение:</b> {message}"
+        url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+        requests.post(url, data={"chat_id": TELEGRAM_CHAT_ID, "text": text, "parse_mode": "HTML"})
+    except Exception as e:
+        print(f"Ошибка отправки в TG: {e}")
+
+# --- КОНФИГУРАЦИЯ FIREBASE ---
 firebase_config = {
     "apiKey": "AIzaSyA1luUtZpTBis61nfNmluAFulH6jiYfNiE",
     "authDomain": "ldo-project-de809.firebaseapp.com",
@@ -15,14 +31,13 @@ firebase_config = {
     "storageBucket": "ldo-project-de809.firebasestorage.app",
     "messagingSenderId": "824905447370",
     "appId": "1:824905447370:web:22d046fb6f02e8e8ec0133",
-    "databaseURL": "" # Оставь пустым, если не используешь Realtime DB
+    "databaseURL": ""
 }
 
-# Инициализация для Python
 firebase = pyrebase.initialize_app(firebase_config)
 auth = firebase.auth()
 
-# --- 2. БАЗА ДАННЫХ ЗАЯВОК (SQLITE) ---
+# --- БАЗА ДАННЫХ ---
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -45,20 +60,17 @@ with app.app_context():
 def home():
     return render_template('index.html')
 
-# --- ЛОГИН ЧЕРЕЗ GOOGLE (Обработчик сигнала от JS) ---
 @app.route('/google_auth', methods=['POST'])
 def google_auth():
     data = request.get_json()
     id_token = data.get('idToken')
     email = data.get('email')
-    
     if id_token and email:
-        session['user'] = id_token # Создаем сессию
+        session['user'] = id_token
         session['email'] = email
         return {'status': 'success'}, 200
     return {'status': 'error'}, 400
 
-# --- ОБЫЧНЫЙ ЛОГИН ---
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -73,7 +85,6 @@ def login():
             flash('Ошибка входа. Проверьте данные.', 'error')
     return render_template('login.html')
 
-# --- РЕГИСТРАЦИЯ ---
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -87,13 +98,11 @@ def register():
             flash(f'Ошибка: {e}', 'error')
     return render_template('register.html')
 
-# --- ВЫХОД ---
 @app.route('/logout')
 def logout():
     session.pop('user', None)
     return redirect(url_for('login'))
 
-# --- АДМИНКА ---
 @app.route('/vadimadmin')
 def admin_panel():
     if 'user' not in session:
@@ -104,7 +113,6 @@ def admin_panel():
     unread = ClientRequest.query.filter_by(is_read=False).count()
     return render_template('admin.html', messages=all_requests, total=total, unread=unread)
 
-# --- ОБРАБОТКА ЗАЯВОК ---
 @app.route('/contact', methods=['POST'])
 def contact():
     name = request.form.get('name')
@@ -119,13 +127,16 @@ def contact():
         new_req = ClientRequest(name=name, contact=email, category=category, message=message)
         db.session.add(new_req)
         db.session.commit()
-        flash('Заявка отправлена!', 'success')
-    except:
-        flash('Ошибка записи', 'error')
+        
+        # ОТПРАВКА В ТЕЛЕГРАМ
+        send_telegram_notification(name, email, category, message)
+        
+        flash('Заявка отправлена! Мы скоро свяжемся с вами.', 'success')
+    except Exception as e:
+        flash(f'Ошибка записи: {e}', 'error')
         
     return redirect(url_for('home') + '#contact')
 
-# Удаление и чтение
 @app.route('/toggle_read/<int:request_id>')
 def toggle_read(request_id):
     if 'user' not in session: return redirect(url_for('login'))

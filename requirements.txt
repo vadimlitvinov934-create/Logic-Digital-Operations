@@ -3,3 +3,4 @@ gunicorn==21.2.0
 Flask-SQLAlchemy
 pyrebase4
 setuptools
+requests
