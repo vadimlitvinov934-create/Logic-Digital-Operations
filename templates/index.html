@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LDO — Logic Digital Operations</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --secondary: #9333EA;
+            --accent: #F43F5E; /* Сделал акцент чуть ярче/краснее для энергии */
+            --text-dark: #1F2937;
+            --glass: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+
+        body {
+            background-color: #ffffff;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,0) 0, hsla(253,16%,7%,0) 50%), 
+                radial-gradient(at 50% 100%, hsla(225,39%,30%,0) 0, hsla(225,39%,30%,0) 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,0) 0, hsla(339,49%,30%,0) 50%);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        .blob { position: fixed; filter: blur(90px); z-index: -1; opacity: 0.5; animation: float 10s infinite ease-in-out; }
+        .blob-1 { top: -10%; left: -10%; width: 600px; height: 600px; background: #C7D2FE; }
+        .blob-2 { top: 40%; right: -15%; width: 500px; height: 500px; background: #E9D5FF; animation-delay: 2s; }
+        .blob-3 { bottom: -10%; left: 20%; width: 700px; height: 700px; background: #FECDD3; opacity: 0.4; animation-delay: 4s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(20px, 40px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+            padding: 2.5rem;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            color: #6B7280;
+            margin-bottom: 4rem;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Nav */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .logo { font-size: 1.8rem; font-weight: 900; color: var(--primary); }
+        
+        .nav-links a {
+            margin-left: 2rem;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover { color: var(--primary); }
+        
+        .nav-btn {
+            padding: 0.7rem 1.5rem;
+            background: var(--text-dark);
+            color: white !important;
+            border-radius: 50px;
+            margin-left: 2rem;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 2rem;
+        }
+        
+        .hero h1 { font-size: 4.5rem; line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -2px; }
+        .hero p { font-size: 1.3rem; max-width: 700px; color: #4B5563; margin-bottom: 2rem; }
+        
+        .cta-btn {
+            padding: 1rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+            transition: transform 0.3s;
+            text-decoration: none;
+        }
+        .cta-btn:hover { transform: scale(1.05); }
+
+        /* Преимущества (Вместо старых цифр) */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 0 10% 5rem;
+            margin-top: -50px; /* Чтобы немного залезть на Hero */
+        }
+        
+        .feature-card {
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .feature-card:hover { transform: translateY(-10px); }
+        .feature-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+        .feature-card h3 { margin-bottom: 0.5rem; font-size: 1.3rem; }
+        .feature-card p { color: #6B7280; font-size: 0.95rem; }
+
+        /* Блок "Почему мы" (Вместо портфолио) */
+        .why-us { padding: 6rem 5%; }
+        .reasons-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .reason-box h3 { font-size: 1.8rem; margin-bottom: 1rem; color: var(--primary); }
+        .reason-box p { font-size: 1.1rem; line-height: 1.8; color: #4B5563; }
+        
+        /* Гарантии */
+        .guarantee {
+            background: rgba(79, 70, 229, 0.05);
+            border-radius: 30px;
+            padding: 4rem 2rem;
+            text-align: center;
+            margin: 4rem 5%;
+            border: 1px solid rgba(79, 70, 229, 0.1);
+        }
+
+        /* Контакты */
+        .contact-section { padding: 6rem 2rem; display: flex; justify-content: center; }
+        .form-container { width: 100%; max-width: 600px; }
+        
+        input, textarea {
+            width: 100%;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.8);
+            transition: 0.3s;
+        }
+        input:focus, textarea:focus { border-color: var(--primary); outline: none; }
+        
+        .flash-msg { padding: 1rem; margin-bottom: 1rem; border-radius: 10px; text-align: center; }
+        .flash-success { background: #D1FAE5; color: #065F46; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.8rem; }
+            .nav-links { display: none; } 
+            .features-grid { margin-top: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <nav>
+        <div class="logo">LDO.</div>
+        <div class="nav-links">
+            <a href="#features">Преимущества</a>
+            <a href="#philosophy">Подход</a>
+            <a href="#guarantee">Гарантии</a>
+            <a href="#contact" class="nav-btn">Стать клиентом</a>
+        </div>
+    </nav>
+
+    <section class="hero" data-aos="fade-up">
+        <div style="margin-bottom: 1rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;">
+            New Generation Agency
+        </div>
+        <h1>Logic Digital <br><span class="gradient-text">Operations</span></h1>
+        <p>Мы — новая кровь на рынке IT. Мы не используем устаревшие шаблоны. Мы создаем будущее, вкладывая 100% усилий в каждый проект, потому что работаем на свою репутацию.</p>
+        <a href="#contact" class="cta-btn">Обсудить идею</a>
+    </section>
+
+    <section id="features" class="features-grid">
+        <div class="glass-card feature-card" data-aos="fade-up" data-aos-delay="0">
+            <span class="feature-icon">🚀</span>
+            <h3>Максимум энергии</h3>
+            <p>Мы — стартап, а значит, "голодны" до крутых результатов. Ваш проект для нас — самый важный.</p>
+        </div>
+        <div class="glass-card feature-card" data-aos="fade-up" data-aos-delay="100">
+            <span class="feature-icon">💎</span>
+            <h3>Свежий взгляд</h3>
+            <p>Глаз не "замылен". Предлагаем нестандартные, яркие решения, которые выделят вас.</p>
+        </div>
+        <div class="glass-card feature-card" data-aos="fade-up" data-aos-delay="200">
+            <span class="feature-icon">⚡</span>
+            <h3>Modern Stack</h3>
+            <p>Только новейшие технологии (Flask, React, AI). Никакого старого кода из 2010-го.</p>
+        </div>
+    </section>
+
+    <section id="philosophy" class="why-us">
+        <h2 class="section-title" data-aos="fade-up">Честный подход</h2>
+        <p class="section-subtitle">Почему стоит доверить проект именно LDO?</p>
+        
+        <div class="reasons-container">
+            <div class="glass-card reason-box" data-aos="fade-right">
+                <h3>🤝 Работа на репутацию</h3>
+                <p>Мы не конвейер. Мы понимаем: один довольный клиент приведет двух. Поэтому мы сделаем больше, чем вы ожидаете, и проследим за каждой мелочью. Нам выгодно сделать вам идеально.</p>
+            </div>
+            
+            <div class="glass-card reason-box" data-aos="fade-left">
+                <h3>🧠 Логика + Креатив</h3>
+                <p>В названии LDO есть слово Logic. Мы строим системы, которые работают без сбоев. Но мы не забываем про "Вайб" — дизайн будет таким, что пользователю не захочется уходить.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="guarantee" data-aos="zoom-in">
+        <div class="guarantee glass-card">
+            <h2 style="font-size: 2rem; margin-bottom: 1rem;">🔒 Надежность — наш фундамент</h2>
+            <p style="max-width: 700px; margin: 0 auto; color: #4B5563;">
+                Несмотря на то, что мы новая команда, мы гарантируем соблюдение сроков и полную прозрачность. 
+                Вы получаете отчеты на каждом этапе. Если что-то пойдет не так — мы это исправим за свой счет.
+            </p>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <div class="glass-card form-container" data-aos="fade-up">
+            <h2 style="text-align: center; margin-bottom: 2rem; font-size: 2rem;">Начать сотрудничество</h2>
+            <p style="text-align: center; margin-bottom: 2rem; color: #6B7280;">Станьте нашим ключевым партнером.</p>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="flash-msg flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <form action="/submit" method="POST">
+                <input type="text" name="name" placeholder="Как вас зовут?" required>
+                <input type="text" name="contact" placeholder="Telegram или телефон" required>
+                <textarea name="message" rows="4" placeholder="Опишите задачу (сайт, бот, софт)..." required></textarea>
+                
+                <button type="submit" class="cta-btn" style="width: 100%; border-radius: 12px; margin-top: 10px;">Отправить заявку 🚀</button>
+            </form>
+        </div>
+    </section>
+
+    <footer style="text-align: center; padding: 2rem; color: #9CA3AF; font-size: 0.9rem;">
+        &copy; 2025 LDO Inc. Сделано с любовью и логикой.
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true });
+    </script>
+</body>
+</html>
