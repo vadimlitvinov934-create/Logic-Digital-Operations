@@ -4,10 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LDO — Logic Digital Operations</title>
-    
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
-    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
@@ -15,7 +11,7 @@
         :root {
             --primary: #4F46E5;
             --secondary: #9333EA;
-            --accent: #F43F5E; /* Сделал акцент чуть ярче/краснее для энергии */
+            --accent: #F43F5E; 
             --text-dark: #1F2937;
             --glass: rgba(255, 255, 255, 0.65);
             --glass-border: rgba(255, 255, 255, 0.4);
@@ -33,6 +29,7 @@
             overflow-x: hidden;
         }
 
+        /* --- Блобы и Карточки --- */
         .blob { position: fixed; filter: blur(90px); z-index: -1; opacity: 0.5; animation: float 10s infinite ease-in-out; }
         .blob-1 { top: -10%; left: -10%; width: 600px; height: 600px; background: #C7D2FE; }
         .blob-2 { top: 40%; right: -15%; width: 500px; height: 500px; background: #E9D5FF; animation-delay: 2s; }
@@ -93,6 +90,10 @@
 
         .logo { font-size: 1.8rem; font-weight: 900; color: var(--primary); }
         
+        .nav-links {
+            display: flex; /* Чтобы использовать flex-gap для интервалов */
+        }
+
         .nav-links a {
             margin-left: 2rem;
             text-decoration: none;
@@ -108,6 +109,16 @@
             color: white !important;
             border-radius: 50px;
             margin-left: 2rem;
+        }
+
+        .menu-toggle {
+            display: none; /* Скрыть на десктопе */
+            font-size: 2rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 1001;
+            color: var(--primary);
         }
 
         /* Hero */
@@ -139,13 +150,13 @@
         }
         .cta-btn:hover { transform: scale(1.05); }
 
-        /* Преимущества (Вместо старых цифр) */
+        /* Преимущества */
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 2rem;
             padding: 0 10% 5rem;
-            margin-top: -50px; /* Чтобы немного залезть на Hero */
+            margin-top: -50px; 
         }
         
         .feature-card {
@@ -157,7 +168,7 @@
         .feature-card h3 { margin-bottom: 0.5rem; font-size: 1.3rem; }
         .feature-card p { color: #6B7280; font-size: 0.95rem; }
 
-        /* Блок "Почему мы" (Вместо портфолио) */
+        /* Блок "Почему мы" */
         .why-us { padding: 6rem 5%; }
         .reasons-container {
             display: grid;
@@ -198,10 +209,86 @@
         .flash-msg { padding: 1rem; margin-bottom: 1rem; border-radius: 10px; text-align: center; }
         .flash-success { background: #D1FAE5; color: #065F46; }
 
+
+        /* --- АДАПТАЦИЯ ДЛЯ МОБИЛЬНЫХ (до 768px) --- */
         @media (max-width: 768px) {
-            .hero h1 { font-size: 2.8rem; }
-            .nav-links { display: none; } 
-            .features-grid { margin-top: 0; }
+            
+            /* Секции */
+            .section-title { font-size: 2rem; }
+            .section-subtitle { margin-bottom: 2.5rem; font-size: 1rem; }
+            
+            /* Навигация */
+            .menu-toggle { display: block; } /* Показать гамбургер */
+            
+            .nav-links { 
+                position: fixed;
+                top: 0;
+                right: -100%; /* Скрыть за экраном */
+                width: 70%;
+                height: 100vh;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 5rem 2rem 2rem;
+                transition: right 0.4s ease-in-out;
+                box-shadow: -4px 0 15px rgba(0,0,0,0.1);
+            }
+
+            .nav-links.active {
+                right: 0; /* Показать меню */
+            }
+
+            .nav-links a {
+                margin: 1rem 0; /* Вертикальный отступ */
+                font-size: 1.2rem;
+                display: block;
+                text-align: center;
+            }
+
+            .nav-btn {
+                margin: 2rem 0 0 0;
+                width: 100%;
+                display: block;
+            }
+
+            /* Hero */
+            .hero {
+                padding-top: 5rem; /* Отступ от навигации */
+                min-height: 80vh;
+            }
+            .hero h1 { font-size: 3rem; letter-spacing: -1px; }
+            .hero p { font-size: 1rem; }
+            .cta-btn { padding: 0.8rem 2rem; font-size: 1rem; }
+            
+            /* Фичи */
+            .features-grid { 
+                padding: 0 5% 4rem; 
+                grid-template-columns: 1fr; /* Одна колонка */
+                margin-top: 0; 
+            }
+            .glass-card { padding: 1.5rem; }
+
+            /* Почему мы */
+            .why-us { padding: 4rem 5%; }
+            .reasons-container {
+                grid-template-columns: 1fr; /* Одна колонка */
+                gap: 2rem;
+            }
+            .reason-box h3 { font-size: 1.5rem; }
+            .reason-box p { font-size: 1rem; }
+
+            /* Гарантии */
+            .guarantee {
+                padding: 2rem 1.5rem;
+                margin: 2rem 5%;
+            }
+
+            /* Контакты */
+            .contact-section { padding: 4rem 1rem; }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 2.5rem; }
         }
     </style>
 </head>
@@ -213,12 +300,15 @@
 
     <nav>
         <div class="logo">LDO.</div>
-        <div class="nav-links">
+        <div class="nav-links" id="navLinks">
             <a href="#features">Преимущества</a>
             <a href="#philosophy">Подход</a>
             <a href="#guarantee">Гарантии</a>
             <a href="#contact" class="nav-btn">Стать клиентом</a>
         </div>
+        <button class="menu-toggle" aria-label="Toggle navigation" onclick="toggleMenu()">
+            ☰
+        </button>
     </nav>
 
     <section class="hero" data-aos="fade-up">
@@ -305,6 +395,12 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         AOS.init({ duration: 800, once: true });
+
+        // Функция для переключения мобильного меню
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
     </script>
 </body>
 </html>
