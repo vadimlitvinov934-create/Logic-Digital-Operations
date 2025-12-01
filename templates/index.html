@@ -3,265 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LDO | Logic Digital Operations</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
-    
+    <title>LDO | Корпоративные IT Решения</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* --- 1. ГЛОБАЛЬНЫЕ СТИЛИ --- */
+        /* --- ПЕРЕМЕННЫЕ (Светлая тема) --- */
         :root {
-            --bg-color: #050505;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --primary: #00f2ff; /* Неоновый голубой */
-            --secondary: #bd00ff; /* Неоновый фиолетовый */
-            --text-main: #ffffff;
-            --text-muted: #a0a0a0;
-            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+            --bg-body: #ffffff;
+            --bg-secondary: #f8fafc; /* Очень светло-серый */
+            --primary: #0f172a; /* Темно-синий (почти черный) для текста */
+            --accent: #2563eb; /* Яркий синий (Royal Blue) */
+            --accent-hover: #1d4ed8;
+            --text-gray: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            overflow-x: hidden;
+            font-family: 'Manrope', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--primary);
+            line-height: 1.6;
         }
 
-        h1, h2, h3, .logo { font-family: 'Orbitron', sans-serif; text-transform: uppercase; }
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
 
-        /* Фоновое свечение */
-        .glow-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100vh;
-            z-index: -1;
-            background: radial-gradient(circle at 10% 20%, rgba(189, 0, 255, 0.15) 0%, transparent 40%),
-                        radial-gradient(circle at 90% 80%, rgba(0, 242, 255, 0.15) 0%, transparent 40%);
-        }
-
-        /* --- 2. НАВИГАЦИЯ --- */
+        /* --- HEADER --- */
         nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px 5%;
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             position: fixed;
             width: 100%;
+            top: 0;
             z-index: 1000;
-            border-bottom: var(--glass-border);
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .logo { font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; }
-        .logo span { color: var(--primary); }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; }
+        .logo span { color: var(--accent); }
 
         .nav-links a {
-            color: var(--text-main);
-            text-decoration: none;
             margin-left: 30px;
-            font-size: 0.9rem;
-            transition: 0.3s;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--primary);
         }
-        .nav-links a:hover { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
+        .nav-links a:hover { color: var(--accent); }
 
-        /* --- 3. HERO СЕКЦИЯ (Главная) --- */
+        .btn-nav {
+            background-color: var(--primary);
+            color: #fff !important;
+            padding: 10px 20px;
+            border-radius: 6px;
+        }
+        .btn-nav:hover { background-color: var(--accent); }
+
+        /* --- HERO SECTION --- */
         .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            padding: 180px 5% 100px;
             text-align: center;
-            padding: 0 20px;
+            background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
         }
 
         .hero h1 {
-            font-size: 4rem;
-            line-height: 1.1;
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
             margin-bottom: 20px;
-            background: linear-gradient(90deg, #fff, var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: fadeIn 1.5s ease-in-out;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            max-width: 600px;
-            margin-bottom: 40px;
-        }
-
-        .btn {
-            padding: 15px 40px;
-            background: transparent;
-            border: 1px solid var(--primary);
             color: var(--primary);
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.4s;
-            position: relative;
-            overflow: hidden;
-            text-decoration: none;
+            letter-spacing: -1px;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-gray);
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+
+        .btn-main {
             display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 18px 45px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-main:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -5px rgba(37, 99, 235, 0.5);
         }
 
-        .btn:hover {
-            background: var(--primary);
-            color: #000;
-            box-shadow: 0 0 20px var(--primary);
-        }
+        /* --- SERVICES --- */
+        .section { padding: 100px 5%; }
+        .bg-gray { background-color: var(--bg-secondary); }
+        
+        .section-header { text-align: center; margin-bottom: 60px; }
+        .section-header h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 15px; }
+        .section-header p { color: var(--text-gray); }
 
-        /* --- 4. УСЛУГИ (Карточки) --- */
-        .services { padding: 100px 5%; }
-        .section-title { font-size: 2.5rem; text-align: center; margin-bottom: 60px; }
-        .section-title span { color: var(--secondary); }
-
-        .cards-container {
+        .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            gap: 40px;
         }
 
         .card {
-            background: var(--card-bg);
-            border: var(--glass-border);
+            background: white;
             padding: 40px;
-            border-radius: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
             transition: 0.3s;
-            position: relative;
         }
-
         .card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary);
-            box-shadow: 0 10px 30px rgba(0, 242, 255, 0.1);
+            box-shadow: var(--shadow);
+            border-color: var(--accent);
+            transform: translateY(-5px);
+        }
+        
+        .icon-box {
+            width: 60px; height: 60px;
+            background: #eff6ff;
+            color: var(--accent);
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+        }
+        .card h3 { font-size: 1.4rem; margin-bottom: 15px; }
+        .card p { color: var(--text-gray); font-size: 1rem; }
+
+        /* --- CONTACT FORM --- */
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
         }
 
-        .card h3 { margin-bottom: 15px; color: var(--text-main); }
-        .card p { color: var(--text-muted); font-size: 0.95rem; }
-        .card-icon { font-size: 2rem; margin-bottom: 20px; color: var(--secondary); }
-
-        /* --- 5. КОНТАКТЫ --- */
-        .contact { padding: 100px 5%; max-width: 800px; margin: 0 auto; }
-        
         .form-group { margin-bottom: 20px; }
+        .form-label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; }
         
-        input, textarea, select {
+        .form-input, .form-select, .form-textarea {
             width: 100%;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid #333;
-            color: #fff;
-            font-family: 'Inter', sans-serif;
-            border-radius: 5px;
+            padding: 12px 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 1rem;
+            transition: 0.2s;
+            background-color: #f8fafc;
+        }
+
+        .form-input:focus, .form-textarea:focus {
             outline: none;
+            border-color: var(--accent);
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
             transition: 0.3s;
         }
+        .btn-submit:hover { background-color: var(--accent); }
 
-        input:focus, textarea:focus { border-color: var(--secondary); }
-
-        /* Flash сообщения */
-        .flash-msg {
-            padding: 15px;
-            background: rgba(0, 255, 0, 0.1);
-            border: 1px solid #0f0;
-            color: #0f0;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        /* Footer */
+        /* --- FOOTER --- */
         footer {
-            padding: 40px;
+            background-color: var(--primary);
+            color: white;
+            padding: 60px 5%;
             text-align: center;
-            border-top: var(--glass-border);
-            color: var(--text-muted);
-            font-size: 0.8rem;
         }
+        footer p { opacity: 0.6; font-size: 0.9rem; }
 
-        /* Анимация */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Flash Message */
+        .alert {
+            max-width: 600px; margin: 20px auto; padding: 15px;
+            border-radius: 8px; text-align: center; font-weight: 600;
         }
+        .alert-success { background-color: #dcfce7; color: #166534; }
 
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.5rem; }
-            nav { flex-direction: column; gap: 15px; }
-            .nav-links { margin-top: 10px; }
-            .nav-links a { margin: 0 10px; }
+            .form-container { padding: 30px 20px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="glow-bg"></div>
-
     <nav>
         <div class="logo">LDO<span>.</span></div>
         <div class="nav-links">
-            <a href="#home">Главная</a>
-            <a href="#services">Решения</a>
-            <a href="#contact">Контакты</a>
+            <a href="#services">Услуги</a>
+            <a href="#about">О нас</a>
+            <a href="#contact" class="btn-nav">Обсудить проект</a>
         </div>
     </nav>
 
+    <section class="hero">
+        <h1>Logic Digital Operations</h1>
+        <p>Мы создаем цифровые экосистемы, которые приносят прибыль. <br>Веб-разработка, мобильные приложения и автоматизация бизнеса.</p>
+        <a href="#contact" class="btn-main">Начать трансформацию</a>
+    </section>
+
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
-        <div style="position: fixed; top: 100px; width: 100%; z-index: 2000; display: flex; justify-content: center;">
-            {% for category, message in messages %}
-              <div class="flash-msg">{{ message }}</div>
-            {% endfor %}
-        </div>
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
       {% endif %}
     {% endwith %}
 
-    <section id="home" class="hero">
-        <h1>Logic Digital<br>Operations</h1>
-        <p>Мы превращаем хаос данных в логику цифрового успеха. Web. Mobile. AI.</p>
-        <a href="#contact" class="btn">НАЧАТЬ ПРОЕКТ</a>
-    </section>
-
-    <section id="services" class="services">
-        <h2 class="section-title">Наши <span>Решения</span></h2>
-        <div class="cards-container">
+    <section id="services" class="section bg-gray">
+        <div class="section-header">
+            <h2>Наши Компетенции</h2>
+            <p>Технологические решения полного цикла для вашего бизнеса</p>
+        </div>
+        <div class="grid">
             <div class="card">
-                <div class="card-icon">⚡</div>
-                <h3>Web Development</h3>
-                <p>Высокоскоростные сайты и веб-приложения на Flask, React и Python. Масштабируемость заложена в архитектуру.</p>
+                <div class="icon-box">💻</div>
+                <h3>Веб-Разработка</h3>
+                <p>Корпоративные порталы и SaaS решения. Мы используем Python и React для создания быстрых систем.</p>
             </div>
             <div class="card">
-                <div class="card-icon">📱</div>
-                <h3>Mobile Apps</h3>
-                <p>Нативные и кроссплатформенные приложения. Интуитивный UI/UX, который заставляет пользователей возвращаться.</p>
+                <div class="icon-box">📱</div>
+                <h3>Мобильные Приложения</h3>
+                <p>iOS и Android. Удобные интерфейсы и стабильная работа. От прототипа до релиза в сторах.</p>
             </div>
             <div class="card">
-                <div class="card-icon">🤖</div>
-                <h3>Business Logic</h3>
-                <p>Цифровизация бизнес-процессов. CRM, ERP и автоматизация на базе ваших уникальных алгоритмов.</p>
+                <div class="icon-box">📊</div>
+                <h3>IT Консалтинг</h3>
+                <p>Аудит текущих процессов и внедрение цифровой логики для сокращения издержек.</p>
             </div>
         </div>
     </section>
 
-    <section id="contact" class="contact">
-        <h2 class="section-title">Свяжитесь с <span>Нами</span></h2>
-        <form action="/contact" method="POST">
-            <div class="form-group">
-                <input type="text" name="name" placeholder="Ваше Имя" required>
-            </div>
-            <div class="form-group">
-                <input type="email" name="email" placeholder="Email" required>
-            </div>
-            <div class="form-group">
-                <textarea name="message" rows="5" placeholder="Опишите задачу..." required></textarea>
-            </div>
-            <button type="submit" class="btn" style="width: 100%;">ОТПРАВИТЬ</button>
-        </form>
+    <section id="contact" class="section">
+        <div class="section-header">
+            <h2>Начать Сотрудничество</h2>
+            <p>Оставьте заявку, и мы подготовим для вас коммерческое предложение</p>
+        </div>
+        <div class="form-container">
+            <form action="/contact" method="POST">
+                <div class="form-group">
+                    <label class="form-label">Ваше Имя</label>
+                    <input type="text" name="name" class="form-input" placeholder="Иван Иванов" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email для связи</label>
+                    <input type="email" name="email" class="form-input" placeholder="name@company.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Тип задачи</label>
+                    <select name="category" class="form-select">
+                        <option value="Разработка сайта">Разработка сайта</option>
+                        <option value="Мобильное приложение">Мобильное приложение</option>
+                        <option value="Дизайн">Дизайн UI/UX</option>
+                        <option value="Другое">Другое</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Описание проекта</label>
+                    <textarea name="message" rows="4" class="form-textarea" placeholder="Расскажите нам о вашей идее..." required></textarea>
+                </div>
+                <button type="submit" class="btn-submit">Отправить Заявку</button>
+            </form>
+        </div>
     </section>
 
     <footer>
-        <p>&copy; 2023 LDO - Logic Digital Operations. Все права защищены.</p>
+        <p>&copy; 2024 LDO — Logic Digital Operations. Все права защищены.</p>
     </footer>
 
 </body>

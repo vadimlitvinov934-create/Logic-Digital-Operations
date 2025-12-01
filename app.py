@@ -1,8 +1,11 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
+from datetime import datetime
 
 app = Flask(__name__)
-# Секретный ключ нужен для работы flash-сообщений (обязательно поменяй на сложный набор символов на проде)
-app.secret_key = 'ldo_secret_key_change_this'
+app.secret_key = 'super_secret_key_ldo'
+
+# Временная "База данных" в оперативной памяти
+messages_db = []
 
 @app.route('/')
 def home():
@@ -10,17 +13,38 @@ def home():
 
 @app.route('/contact', methods=['POST'])
 def contact():
-    # Здесь логика обработки формы
     name = request.form.get('name')
     email = request.form.get('email')
-    message = request.form.get('message')
+    category = request.form.get('category')
+    message_text = request.form.get('message')
     
-    # Имитация отправки (можно потом подключить реальную почту или базу данных)
-    print(f"Новая заявка: {name}, {email}, {message}")
+    # Сохраняем заявку
+    new_message = {
+        'id': len(messages_db) + 1,
+        'name': name,
+        'email': email,
+        'category': category,
+        'message': message_text,
+        'time': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    }
+    messages_db.insert(0, new_message) # Добавляем в начало списка (новые сверху)
     
-    flash('Сообщение отправлено! Мы свяжемся с вами.', 'success')
+    flash('Спасибо! Ваша заявка принята. Мы свяжемся с вами в ближайшее время.', 'success')
     return redirect(url_for('home') + '#contact')
 
+# Секретная админка
+@app.route('/vadimadmin')
+def admin_panel():
+    # Простая аналитика: считаем сколько заявок от каждого email
+    stats = {}
+    for msg in messages_db:
+        email = msg['email']
+        stats[email] = stats.get(email, 0) + 1
+    
+    # Сортируем статистику (кто больше всех пишет - тот сверху)
+    sorted_stats = sorted(stats.items(), key=lambda item: item[1], reverse=True)
+
+    return render_template('admin.html', messages=messages_db, stats=sorted_stats, total=len(messages_db))
+
 if __name__ == '__main__':
-    # debug=True только для локальной разработки!
     app.run(debug=True)
