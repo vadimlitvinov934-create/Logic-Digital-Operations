@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5 pt-5">
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6">
+            <span class="badge bg-primary mb-2">LDO Interactive</span>
+            <h1 class="fw-bold">Умный конфигуратор</h1>
+            <p class="lead text-muted">Это пример того, как мы создаем интерактивные интерфейсы для бизнеса. Подвигайте ползунки, чтобы рассчитать примерную стоимость и сроки.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-7 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body p-4">
+                    <h4 class="mb-4">Параметры проекта</h4>
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Тип платформы</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="platform" id="web" value="1" checked onchange="calc()">
+                            <label class="btn btn-outline-primary" for="web">Web Сайт</label>
+                            
+                            <input type="radio" class="btn-check" name="platform" id="bot" value="0.8" onchange="calc()">
+                            <label class="btn btn-outline-primary" for="bot">Telegram Бот</label>
+                            
+                            <input type="radio" class="btn-check" name="platform" id="app" value="1.5" onchange="calc()">
+                            <label class="btn btn-outline-primary" for="app">Мобильное App</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold d-flex justify-content-between">
+                            <span>Сложность дизайна</span>
+                            <span class="text-primary" id="designVal">Стандарт</span>
+                        </label>
+                        <input type="range" class="form-range" min="1" max="3" step="1" id="designRange" oninput="calc()">
+                        <div class="d-flex justify-content-between text-muted small">
+                            <span>Шаблон</span>
+                            <span>Кастом</span>
+                            <span>Premium 3D</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="adminPanel" onchange="calc()">
+                            <label class="form-check-label" for="adminPanel">Админ-панель (+20%)</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="aiFeature" onchange="calc()">
+                            <label class="form-check-label" for="aiFeature">Интеграция AI / ChatGPT (+40%)</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5 mb-4">
+            <div class="card shadow border-0 text-white grad-btn h-100">
+                <div class="card-body p-5 d-flex flex-column justify-content-center text-center">
+                    <h3 class="opacity-75">Ориентир бюджета</h3>
+                    <h1 class="display-3 fw-bold my-3" id="totalPrice">50 000 ₽</h1>
+                    <hr class="bg-white opacity-50">
+                    <div class="row mt-3">
+                        <div class="col-6 border-end">
+                            <small class="opacity-75">Срок (раб. дней)</small>
+                            <div class="h3 fw-bold" id="totalDays">14</div>
+                        </div>
+                        <div class="col-6">
+                            <small class="opacity-75">Поддержка</small>
+                            <div class="h3 fw-bold">3 мес.</div>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('index', _anchor='contact') }}" class="btn btn-light text-primary fw-bold mt-4 rounded-pill">Заказать этот проект</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function calc() {
+        // Базовая ставка
+        let basePrice = 50000;
+        let baseDays = 10;
+
+        // Коэффициенты
+        let platformMult = parseFloat(document.querySelector('input[name="platform"]:checked').value);
+        let designLevel = parseInt(document.getElementById('designRange').value);
+        
+        let hasAdmin = document.getElementById('adminPanel').checked;
+        let hasAI = document.getElementById('aiFeature').checked;
+
+        // Логика расчета
+        let designMult = 1;
+        let designText = "Стандарт";
+        if(designLevel === 1) { designMult = 0.8; designText = "Базовый"; }
+        if(designLevel === 2) { designMult = 1.0; designText = "Индивидуальный"; }
+        if(designLevel === 3) { designMult = 1.5; designText = "Premium / 3D"; }
+        document.getElementById('designVal').innerText = designText;
+
+        let total = basePrice * platformMult * designMult;
+        let days = baseDays * platformMult * designMult;
+
+        if(hasAdmin) { total *= 1.2; days += 5; }
+        if(hasAI) { total *= 1.4; days += 7; }
+
+        // Анимация чисел (простая)
+        document.getElementById('totalPrice').innerText = Math.round(total).toLocaleString() + " ₽";
+        document.getElementById('totalDays').innerText = Math.round(days);
+    }
+    
+    // Запуск при загрузке
+    calc();
+</script>
+{% endblock %}

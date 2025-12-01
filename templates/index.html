@@ -3,59 +3,85 @@
 {% block content %}
 <header class="hero-section text-white text-center d-flex align-items-center">
     <div class="container">
+        <span class="badge bg-light text-primary mb-3 px-3 py-2 rounded-pill fw-bold">Startup Energy 🚀</span>
         <h1 class="display-3 fw-bold mb-3">Logic Digital Operations</h1>
-        <p class="lead mb-4">Превращаем сложные процессы в простые решения.<br>От логики к результату.</p>
-        <a href="#contact" class="btn btn-light btn-lg rounded-pill px-5 fw-bold text-primary shadow">Оставить заявку</a>
+        <p class="lead mb-4 col-md-8 mx-auto">Мы молодая команда, которая работает быстрее крупных студий.<br>Никакой бюрократии. Только чистый код и результат.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="#contact" class="btn btn-light btn-lg rounded-pill px-4 fw-bold text-primary shadow">Обсудить проект</a>
+            <a href="{{ url_for('demo') }}" class="btn btn-outline-light btn-lg rounded-pill px-4 fw-bold">Смотреть демо</a>
+        </div>
     </div>
 </header>
 
 <section class="py-5">
-    <div class="container text-center">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="fw-bold">Почему выбирают нас?</h2>
+                <p class="text-muted">Мы компенсируем молодость гиперответственностью.</p>
+            </div>
+        </div>
         <div class="row g-4">
             <div class="col-md-4">
-                <div class="p-4 h-100 shadow-sm rounded border-0 card-hover">
-                    <h3 class="fw-bold text-primary">Автоматизация</h3>
-                    <p class="text-muted">Внедряем умные алгоритмы для экономии вашего времени.</p>
+                <div class="card h-100 border-0 shadow-sm p-4">
+                    <div class="display-4 text-primary mb-3">⚡</div>
+                    <h4 class="fw-bold">Быстрый старт</h4>
+                    <p class="text-muted">Не тратим недели на согласования. Приступаем к работе в день обращения. MVP за 2 недели.</p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="p-4 h-100 shadow-sm rounded border-0 card-hover">
-                    <h3 class="fw-bold text-primary">Разработка</h3>
-                    <p class="text-muted">Создаем современные цифровые продукты под ключ.</p>
+                <div class="card h-100 border-0 shadow-sm p-4">
+                    <div class="display-4 text-primary mb-3">💎</div>
+                    <h4 class="fw-bold">Прозрачность</h4>
+                    <p class="text-muted">Вы видите процесс разработки в реальном времени. Ежедневные отчеты и доступ к Git.</p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="p-4 h-100 shadow-sm rounded border-0 card-hover">
-                    <h3 class="fw-bold text-primary">Аналитика</h3>
-                    <p class="text-muted">Превращаем данные в понятные стратегии роста.</p>
+                <div class="card h-100 border-0 shadow-sm p-4">
+                    <div class="display-4 text-primary mb-3">🛡</div>
+                    <h4 class="fw-bold">Гарантия</h4>
+                    <p class="text-muted">Мы не исчезаем после сдачи проекта. 3 месяца бесплатной техподдержки для каждого клиента.</p>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<section id="contact" class="py-5 bg-light">
+<section class="py-5 bg-light">
+    <div class="container text-center">
+        <p class="text-uppercase fw-bold text-muted spacing-2">Наш технологический стек</p>
+        <div class="row justify-content-center align-items-center opacity-75 grayscale-icons">
+            <div class="col-6 col-md-2 my-3 fw-bold fs-5">Python / Flask</div>
+            <div class="col-6 col-md-2 my-3 fw-bold fs-5">React JS</div>
+            <div class="col-6 col-md-2 my-3 fw-bold fs-5">PostgreSQL</div>
+            <div class="col-6 col-md-2 my-3 fw-bold fs-5">Docker</div>
+            <div class="col-6 col-md-2 my-3 fw-bold fs-5">OpenAI API</div>
+        </div>
+    </div>
+</section>
+
+<section id="contact" class="py-5">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card border-0 shadow-lg">
                     <div class="card-body p-5">
-                        <h2 class="text-center mb-4 fw-bold">Свяжитесь с нами</h2>
+                        <h2 class="text-center mb-4 fw-bold">Начать работу</h2>
                         <form action="/submit" method="POST">
                             <div class="mb-3">
-                                <label class="form-label text-muted">Ваше имя</label>
-                                <input type="text" name="name" class="form-control form-control-lg bg-light border-0" placeholder="Иван Иванов" required>
+                                <label class="form-label text-muted">Имя</label>
+                                <input type="text" name="name" class="form-control form-control-lg bg-light border-0" required>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label text-muted">Контакты (Email / Телефон)</label>
-                                <input type="text" name="contact" class="form-control form-control-lg bg-light border-0" placeholder="+7 999..." required>
+                                <label class="form-label text-muted">Связь</label>
+                                <input type="text" name="contact" class="form-control form-control-lg bg-light border-0" required>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label text-muted">Сообщение</label>
-                                <textarea name="message" class="form-control form-control-lg bg-light border-0" rows="4" placeholder="Опишите вашу задачу..."></textarea>
+                                <label class="form-label text-muted">Задача</label>
+                                <textarea name="message" class="form-control form-control-lg bg-light border-0" rows="3"></textarea>
                             </div>
                             <div class="d-grid">
-                                <button type="submit" class="btn btn-primary btn-lg grad-btn border-0">Отправить заявку</button>
+                                <button type="submit" class="btn btn-primary btn-lg grad-btn border-0">Отправить</button>
                             </div>
                         </form>
                     </div>

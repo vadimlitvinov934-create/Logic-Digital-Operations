@@ -39,6 +39,11 @@ def favicon():
 def index():
     return render_template('index.html')
 
+# --- НОВЫЙ РОУТ: ДЕМОНСТРАЦИЯ ВОЗМОЖНОСТЕЙ ---
+@app.route('/demo')
+def demo():
+    return render_template('demo.html')
+
 @app.route('/submit', methods=['POST'])
 def submit():
     name = request.form.get('name')
