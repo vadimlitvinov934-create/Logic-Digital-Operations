@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import Flask, render_template, request, flash, redirect, url_for, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import os # Добавлен os для работы с путями
 
 app = Flask(__name__)
 app.secret_key = 'ldo_super_secret_key'
@@ -15,7 +16,7 @@ db = SQLAlchemy(app)
 # Создаем модель (таблицу) для хранения заявок
 class ClientRequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)   # Имя
+    name = db.Column(db.String(100), nullable=False)    # Имя
     contact = db.Column(db.String(100), nullable=False) # Контакт
     message = db.Column(db.Text, nullable=False)        # Сообщение
     date = db.Column(db.DateTime, default=datetime.utcnow) # Дата и время
@@ -26,6 +27,16 @@ class ClientRequest(db.Model):
 # Эта команда создает файл базы данных, если его нет
 with app.app_context():
     db.create_all()
+
+
+# --- РОУТ ДЛЯ ФАВИКОНА (ОБЕСПЕЧИВАЕТ КОРРЕКТНУЮ ЗАГРУЗКУ) ---
+@app.route('/favicon.ico')
+def favicon():
+    # Файл favicon.ico будет искаться в папке /static
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico',
+                               mimetype='image/vnd.microsoft.icon')
+# -----------------------------------------------------------
 
 
 @app.route('/')
@@ -57,7 +68,6 @@ def submit():
         return redirect(url_for('index'))
 
 # --- СЕКРЕТНАЯ АДМИНКА ---
-# Перейди на http://127.0.0.1:5000/messages чтобы увидеть заявки
 @app.route('/messages')
 def view_messages():
     # Достаем все заявки из базы, новые сверху
