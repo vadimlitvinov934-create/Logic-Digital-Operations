@@ -1,139 +1,67 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LDO — Logic Digital Operations</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    
-    <style>
-        :root {
-            --primary: #4F46E5;
-            --secondary: #9333EA;
-            --accent: #F43F5E; 
-            --text-dark: #1F2937;
-            --glass: rgba(255, 255, 255, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.4);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
-        body {
-            background-color: #ffffff;
-            background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,0) 0, hsla(253,16%,7%,0) 50%);
-            color: var(--text-dark);
-            min-height: 100vh;
-        }
-        /* Стили для формы, скопированные и адаптированные из вашего файла */
-        .hero-section {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            padding: 20px;
-            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-        }
-        .form-container {
-            background: var(--glass);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            padding: 2.5rem;
-            border-radius: 24px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-            width: 100%;
-            max-width: 500px;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 12px 16px;
-            margin-bottom: 15px;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: rgba(255,255,255,0.9);
-        }
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
-        }
-        .cta-btn {
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            border-radius: 12px;
-            width: 100%;
-            transition: transform 0.2s;
-        }
-        .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3); }
-        
-        /* Стили для уведомлений (Flash messages) */
-        .flash-msg {
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: 500;
-        }
-        .flash-success { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-        .flash-error { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
-        
-        h1 { font-weight: 800; font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(to right, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        p.subtitle { color: #6b7280; margin-bottom: 2rem; font-size: 1.1rem; }
-    </style>
-</head>
-<body>
+{% extends 'base.html' %}
 
-    <section class="hero-section">
-        <div class="form-container" data-aos="fade-up">
-            <div style="text-align: center;">
-                <h1>LDO</h1>
-                <p class="subtitle">Logic Digital Operations. Ваш партнер в IT.</p>
+{% block content %}
+<header class="hero-section text-white text-center d-flex align-items-center">
+    <div class="container">
+        <h1 class="display-3 fw-bold mb-3">Logic Digital Operations</h1>
+        <p class="lead mb-4">Превращаем сложные процессы в простые решения.<br>От логики к результату.</p>
+        <a href="#contact" class="btn btn-light btn-lg rounded-pill px-5 fw-bold text-primary shadow">Оставить заявку</a>
+    </div>
+</header>
+
+<section class="py-5">
+    <div class="container text-center">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="p-4 h-100 shadow-sm rounded border-0 card-hover">
+                    <h3 class="fw-bold text-primary">Автоматизация</h3>
+                    <p class="text-muted">Внедряем умные алгоритмы для экономии вашего времени.</p>
+                </div>
             </div>
-            
-            {% with messages = get_flashed_messages(with_categories=true) %}
-              {% if messages %}
-                {% for category, message in messages %}
-                  <div class="flash-msg flash-{{ category }}">{{ message }}</div>
-                {% endfor %}
-              {% endif %}
-            {% endwith %}
-
-            <form method="POST">
-                {{ form.hidden_tag() }}
-                
-                {% if form.name.errors %}
-                    <div style="color:red; font-size:0.8rem;">{{ form.name.errors[0] }}</div>
-                {% endif %}
-                {{ form.name(placeholder="Как вас зовут?") }}
-
-                {% if form.contact.errors %}
-                    <div style="color:red; font-size:0.8rem;">{{ form.contact.errors[0] }}</div>
-                {% endif %}
-                {{ form.contact(placeholder="Telegram или телефон") }}
-
-                {% if form.message.errors %}
-                    <div style="color:red; font-size:0.8rem;">{{ form.message.errors[0] }}</div>
-                {% endif %}
-                {{ form.message(rows="4", placeholder="Опишите задачу (сайт, бот, софт)...") }}
-                
-                {{ form.submit(class="cta-btn") }}
-            </form>
+            <div class="col-md-4">
+                <div class="p-4 h-100 shadow-sm rounded border-0 card-hover">
+                    <h3 class="fw-bold text-primary">Разработка</h3>
+                    <p class="text-muted">Создаем современные цифровые продукты под ключ.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 h-100 shadow-sm rounded border-0 card-hover">
+                    <h3 class="fw-bold text-primary">Аналитика</h3>
+                    <p class="text-muted">Превращаем данные в понятные стратегии роста.</p>
+                </div>
+            </div>
         </div>
-        
-        <footer style="margin-top: 2rem; color: #9CA3AF; font-size: 0.9rem;">
-            &copy; 2025 LDO Inc. <a href="{{ url_for('login') }}" style="color: #9CA3AF; text-decoration: none;">🔒</a>
-        </footer>
-    </section>
+    </div>
+</section>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        AOS.init({ duration: 800, once: true });
-    </script>
-</body>
-</html>
+<section id="contact" class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-body p-5">
+                        <h2 class="text-center mb-4 fw-bold">Свяжитесь с нами</h2>
+                        <form action="/submit" method="POST">
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Ваше имя</label>
+                                <input type="text" name="name" class="form-control form-control-lg bg-light border-0" placeholder="Иван Иванов" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Контакты (Email / Телефон)</label>
+                                <input type="text" name="contact" class="form-control form-control-lg bg-light border-0" placeholder="+7 999..." required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Сообщение</label>
+                                <textarea name="message" class="form-control form-control-lg bg-light border-0" rows="4" placeholder="Опишите вашу задачу..."></textarea>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg grad-btn border-0">Отправить заявку</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

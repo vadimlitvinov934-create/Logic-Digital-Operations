@@ -1,64 +1,50 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>LDO Admin | Заявки</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        body { background: #f0f4f8; }
-        .navbar { background: linear-gradient(90deg, #4F46E5, #9333EA) !important; }
-        .req-card { transition: all 0.2s; border-left: 5px solid transparent; }
-        .req-unread { border-left-color: #F43F5E; background-color: #fff5f5; }
-        .req-read { border-left-color: #10B981; }
-    </style>
-</head>
-<body>
-    <nav class="navbar navbar-dark bg-primary px-4 mb-4">
-        <a class="navbar-brand" href="#">LDO Admin Panel</a>
-        <div>
-            <a href="{{ url_for('index') }}" class="btn btn-outline-light btn-sm me-2">На сайт</a>
-            <a href="{{ url_for('logout') }}" class="btn btn-light btn-sm">Выйти</a>
-        </div>
-    </nav>
+{% extends 'base.html' %}
 
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3>Входящие заявки</h3>
-            <span class="badge bg-secondary">{{ requests|length }} всего</span>
-        </div>
-
-        {% if requests %}
-            <div class="row">
-            {% for req in requests %}
-                <div class="col-12 mb-3">
-                    <div class="card shadow-sm req-card {% if not req.is_read %}req-unread{% else %}req-read{% endif %}">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <h5 class="card-title">{{ req.name }}</h5>
-                                <small class="text-muted">{{ req.date.strftime('%Y-%m-%d %H:%M') }}</small>
-                            </div>
-                            <h6 class="card-subtitle mb-2 text-primary">{{ req.contact }}</h6>
-                            <p class="card-text bg-light p-2 rounded">{{ req.message }}</p>
-                            
-                            <div class="d-flex gap-2">
-                                <form action="{{ url_for('toggle_read', req_id=req.id) }}" method="POST">
-                                    <button class="btn btn-sm {% if req.is_read %}btn-outline-secondary{% else %}btn-success{% endif %}">
-                                        <i class="fas fa-check"></i> {% if req.is_read %}Отметить как новое{% else %}Прочитано{% endif %}
-                                    </button>
-                                </form>
-                                <form action="{{ url_for('delete_request', req_id=req.id) }}" method="POST" onsubmit="return confirm('Удалить?')">
-                                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
-                                </form>
-                            </div>
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Входящие заявки</h2>
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-hover align-middle mb-0 bg-white">
+            <thead class="bg-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Дата</th>
+                    <th>Имя</th>
+                    <th>Контакт</th>
+                    <th>Сообщение</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in requests %}
+                <tr class="{{ 'table-primary' if not req.is_read else '' }}">
+                    <td>{{ req.id }}</td>
+                    <td>{{ req.date.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td class="fw-bold">{{ req.name }}</td>
+                    <td>{{ req.contact }}</td>
+                    <td>{{ req.message }}</td>
+                    <td>
+                        {% if req.is_read %}
+                        <span class="badge bg-secondary rounded-pill">Прочитано</span>
+                        {% else %}
+                        <span class="badge bg-success rounded-pill">Новое</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <form action="{{ url_for('toggle_read', request_id=req.id) }}" method="POST">
+                                <button class="btn btn-sm btn-outline-primary">✔</button>
+                            </form>
+                            <form action="{{ url_for('delete_request', request_id=req.id) }}" method="POST">
+                                <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Удалить?')">🗑</button>
+                            </form>
                         </div>
-                    </div>
-                </div>
-            {% endfor %}
-            </div>
-        {% else %}
-            <div class="alert alert-info text-center">Заявок пока нет.</div>
-        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}
