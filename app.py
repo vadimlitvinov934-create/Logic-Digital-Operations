@@ -115,11 +115,3 @@ def delete_request(request_id):
         flash(f'Ошибка при удалении заявки: {e}', 'error')
     
     return redirect(url_for('view_messages'))
-
-
-if __name__ == '__main__':
-    # Добавлена проверка на существование базы данных
-    if not os.path.exists('site.db'):
-        with app.app_context():
-            db.create_all()
-    app.run(debug=True)
