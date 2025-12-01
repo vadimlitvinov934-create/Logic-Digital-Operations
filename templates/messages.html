@@ -2,231 +2,63 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Админка LDO | Входящие заявки</title>
-    <!-- Использование Font Awesome для иконок (корзина, глаз) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>LDO Admin | Заявки</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Общие стили */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f0f4f8; /* Светло-голубой фон */
-            color: #333;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        
-        /* Заголовок */
-        h1 {
-            color: #007bff;
-            border-bottom: 4px solid #007bff;
-            padding-bottom: 10px;
-            margin-bottom: 30px;
-            font-weight: 300;
-        }
-
-        /* Flash-сообщения (уведомления) */
-        .flash {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 6px;
-            font-size: 1em;
-            font-weight: 500;
-        }
-        .flash.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .flash.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .flash.info { background-color: #cce5ff; color: #004085; border: 1px solid #b8daff; }
-        .flash.warning { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-
-        /* Стиль заявки */
-        .request-card {
-            background: #ffffff;
-            padding: 25px;
-            margin-bottom: 20px;
-            border-radius: 12px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-            border-left: 5px solid #007bff;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        
-        /* Стиль для непрочитанных заявок */
-        .request-card.unread {
-            border-left: 5px solid #dc3545; /* Красная полоса */
-            box-shadow: 0 6px 15px rgba(220, 53, 69, 0.15);
-        }
-
-        .request-card strong {
-            color: #007bff;
-            font-weight: 600;
-        }
-        
-        .request-card.unread strong {
-            color: #dc3545;
-        }
-        
-        .header-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .contact-link {
-            font-size: 1.1em;
-            color: #28a745;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        .contact-link:hover {
-            color: #1e7e34;
-            text-decoration: underline;
-        }
-
-        .message-content {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 15px;
-            white-space: pre-wrap;
-            border: 1px solid #e9ecef;
-            line-height: 1.5;
-        }
-
-        .footer-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-            padding-top: 10px;
-            border-top: 1px solid #eee;
-        }
-        
-        .date-footer {
-            font-size: 0.9em;
-            color: #6c757d;
-        }
-
-        /* Стили кнопок */
-        .action-button {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: background-color 0.2s, transform 0.1s;
-        }
-        .action-button:hover {
-            transform: translateY(-1px);
-        }
-        
-        .toggle-read-btn {
-            background-color: #6c757d;
-            color: white;
-        }
-        .toggle-read-btn.read {
-            background-color: #28a745;
-        }
-        .toggle-read-btn:hover {
-            opacity: 0.9;
-        }
-
-        .delete-btn {
-            background-color: #dc3545;
-            color: white;
-            margin-left: 10px;
-        }
-        .delete-btn:hover {
-            background-color: #c82333;
-        }
-        
-        .no-requests {
-            text-align: center;
-            padding: 50px;
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            font-size: 1.2em;
-            color: #5a6268;
-        }
+        body { background: #f0f4f8; }
+        .navbar { background: linear-gradient(90deg, #4F46E5, #9333EA) !important; }
+        .req-card { transition: all 0.2s; border-left: 5px solid transparent; }
+        .req-unread { border-left-color: #F43F5E; background-color: #fff5f5; }
+        .req-read { border-left-color: #10B981; }
     </style>
 </head>
 <body>
+    <nav class="navbar navbar-dark bg-primary px-4 mb-4">
+        <a class="navbar-brand" href="#">LDO Admin Panel</a>
+        <div>
+            <a href="{{ url_for('index') }}" class="btn btn-outline-light btn-sm me-2">На сайт</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-light btn-sm">Выйти</a>
+        </div>
+    </nav>
 
     <div class="container">
-        <h1>📨 Входящие заявки (Admin Panel)</h1>
-        
-        <!-- Отображение Flash-сообщений -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="flash {{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3>Входящие заявки</h3>
+            <span class="badge bg-secondary">{{ requests|length }} всего</span>
+        </div>
 
-        <!-- Проверяем, есть ли заявки -->
         {% if requests %}
+            <div class="row">
             {% for req in requests %}
-                <!-- Применяем класс 'unread', если заявка не прочитана -->
-                <div class="request-card {% if not req.is_read %}unread{% endif %}">
-                    
-                    <div class="header-info">
-                        <!-- Имя и ID -->
-                        <h3>
-                            Заявка #{{ req.id }} от: <strong>{{ req.name }}</strong>
-                        </h3>
-                        
-                        <!-- Контакт -->
-                        <a href="mailto:{{ req.contact }}" class="contact-link" target="_blank" title="Написать клиенту">
-                            <i class="fas fa-envelope"></i> {{ req.contact }}
-                        </a>
-                    </div>
-                    
-                    <p>
-                        <strong>Сообщение:</strong>
-                    </p>
-                    <div class="message-content">
-                        {{ req.message }}
-                    </div>
-                    
-                    <div class="footer-actions">
-                        <span class="date-footer">
-                            Получено: {{ req.date.strftime('%Y-%m-%d %H:%M:%S') }}
-                        </span>
-
-                        <!-- Форма для пометки прочтения/непрочтения -->
-                        <form method="POST" action="{{ url_for('toggle_read', request_id=req.id) }}" style="display:inline;">
-                            <button type="submit" 
-                                class="action-button toggle-read-btn {% if req.is_read %}read{% endif %}"
-                                title="Пометить как {% if req.is_read %}непрочитанную{% else %}прочитанную{% endif %}"
-                            >
-                                <i class="fas {% if req.is_read %}fa-eye-slash{% else %}fa-eye{% endif %}"></i>
-                                {% if req.is_read %} Не прочитано {% else %} Прочитано {% endif %}
-                            </button>
-                        </form>
-
-                        <!-- Форма для удаления -->
-                        <form method="POST" action="{{ url_for('delete_request', request_id=req.id) }}" style="display:inline;" onsubmit="return confirm('Вы уверены, что хотите удалить заявку от {{ req.name }}?');">
-                            <button type="submit" class="action-button delete-btn" title="Удалить заявку">
-                                <i class="fas fa-trash"></i> Удалить
-                            </button>
-                        </form>
+                <div class="col-12 mb-3">
+                    <div class="card shadow-sm req-card {% if not req.is_read %}req-unread{% else %}req-read{% endif %}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <h5 class="card-title">{{ req.name }}</h5>
+                                <small class="text-muted">{{ req.date.strftime('%Y-%m-%d %H:%M') }}</small>
+                            </div>
+                            <h6 class="card-subtitle mb-2 text-primary">{{ req.contact }}</h6>
+                            <p class="card-text bg-light p-2 rounded">{{ req.message }}</p>
+                            
+                            <div class="d-flex gap-2">
+                                <form action="{{ url_for('toggle_read', req_id=req.id) }}" method="POST">
+                                    <button class="btn btn-sm {% if req.is_read %}btn-outline-secondary{% else %}btn-success{% endif %}">
+                                        <i class="fas fa-check"></i> {% if req.is_read %}Отметить как новое{% else %}Прочитано{% endif %}
+                                    </button>
+                                </form>
+                                <form action="{{ url_for('delete_request', req_id=req.id) }}" method="POST" onsubmit="return confirm('Удалить?')">
+                                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             {% endfor %}
-        {% else %}
-            <div class="no-requests">
-                <p>🥳 Все чисто! Входящих заявок пока нет.</p>
-                <p>Если хотите проверить отправку, перейдите на <a href="{{ url_for('index') }}">главную страницу</a>.</p>
             </div>
+        {% else %}
+            <div class="alert alert-info text-center">Заявок пока нет.</div>
         {% endif %}
-
     </div>
-
 </body>
 </html>

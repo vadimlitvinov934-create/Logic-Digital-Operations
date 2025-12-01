@@ -1,117 +1,120 @@
-from flask import Flask, render_template, request, flash, redirect, url_for, send_from_directory
+import os
+from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import FlaskForm
+from wtforms import StringField, TextAreaField, SubmitField, PasswordField
+from wtforms.validators import DataRequired, Length
+from dotenv import load_dotenv
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from datetime import datetime
-import os 
+
+# Загружаем секреты из .env (создайте этот файл, как в прошлом шаге)
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = 'ldo_super_secret_key'
-
-# --- НАСТРОЙКА БАЗЫ ДАННЫХ ---
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev_key_change_me')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///site.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
 
-# Создаем модель (таблицу) для хранения заявок
+# --- Модель БД (Как было у вас, но чуть лучше) ---
 class ClientRequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)    # Имя
-    contact = db.Column(db.String(100), nullable=False) # Контакт
-    message = db.Column(db.Text, nullable=False)        # Сообщение
-    date = db.Column(db.DateTime, default=datetime.utcnow) # Дата и время
-    # Добавим поле 'is_read' для отметки о прочтении, по умолчанию False (непрочитано)
-    is_read = db.Column(db.Boolean, default=False) 
+    name = db.Column(db.String(100), nullable=False)
+    contact = db.Column(db.String(100), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+    is_read = db.Column(db.Boolean, default=False)
 
-    def __repr__(self):
-        return f'<Заявка {self.id} от {self.name}>'
+# Админ (фиктивный пользователь для входа)
+class AdminUser(UserMixin):
+    id = 1
 
-# Эта команда создает файл базы данных, если его нет
-with app.app_context():
-    db.create_all()
+@login_manager.user_loader
+def load_user(user_id):
+    return AdminUser() if int(user_id) == 1 else None
 
+# --- Формы ---
+class LDORequestForm(FlaskForm):
+    name = StringField('Имя', validators=[DataRequired()])
+    contact = StringField('Контакт', validators=[DataRequired()])
+    message = TextAreaField('Задача', validators=[DataRequired()])
+    submit = SubmitField('Отправить заявку 🚀')
 
-# --- РОУТ ДЛЯ ФАВИКОНА (ОБЕСПЕЧИВАЕТ КОРРЕКТНУЮ ЗАГРУЗКУ) ---
-@app.route('/favicon.ico')
-def favicon():
-    # Файл favicon.ico будет искаться в папке /static
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                              'favicon.ico',
-                              mimetype='image/vnd.microsoft.icon')
-# -----------------------------------------------------------
+class LoginForm(FlaskForm):
+    username = StringField('Login', validators=[DataRequired()])
+    password = PasswordField('Pass', validators=[DataRequired()])
+    submit = SubmitField('Войти')
 
+# --- Маршруты ---
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    # В шаблоне index.html нужно предусмотреть отображение flash-сообщений
-    return render_template('index.html')
-
-@app.route('/submit', methods=['POST'])
-def submit():
-    if request.method == 'POST':
-        name = request.form.get('name')
-        contact = request.form.get('contact')
-        message = request.form.get('message')
-
-        # Проверка, чтобы не отправляли пустые поля
-        if not name or not contact:
-            flash('Пожалуйста, заполните имя и контакт!', 'error')
-            return redirect(url_for('index'))
-
-        # --- СОХРАНЕНИЕ В БАЗУ ---
+    form = LDORequestForm()
+    if form.validate_on_submit():
+        new_req = ClientRequest(
+            name=form.name.data,
+            contact=form.contact.data,
+            message=form.message.data
+        )
         try:
-            new_request = ClientRequest(name=name, contact=contact, message=message)
-            db.session.add(new_request) # Добавляем
-            db.session.commit()         # Сохраняем
-            
-            flash('Заявка успешно улетела в базу LDO! Ждите ответа.', 'success')
-        except Exception as e:
+            db.session.add(new_req)
+            db.session.commit()
+            flash('Заявка принята! Мы скоро свяжемся с вами.', 'success')
+            return redirect(url_for('index'))
+        except:
             db.session.rollback()
-            flash(f'Ошибка базы данных: {e}', 'error')
-            
-        return redirect(url_for('index'))
+            flash('Ошибка базы данных.', 'error')
 
-# --- СЕКРЕТНАЯ АДМИНКА (Обновлено для использования шаблона) ---
+    return render_template('index.html', form=form)
+
+# --- АДМИНКА (Защищена паролем) ---
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('messages'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        if form.username.data == os.environ.get('ADMIN_USERNAME') and \
+           form.password.data == os.environ.get('ADMIN_PASSWORD'):
+            login_user(AdminUser())
+            return redirect(url_for('messages'))
+        else:
+            flash('Неверный логин или пароль', 'error')
+    return render_template('login.html', form=form)
+
 @app.route('/messages')
-def view_messages():
-    # Достаем все заявки из базы, новые (непрочитанные) сверху
-    all_requests = ClientRequest.query.order_by(
-        ClientRequest.is_read.asc(), # Сначала False (непрочитанные)
-        ClientRequest.date.desc()    # Потом по дате (самые новые)
-    ).all()
-    
-    # Передаем список заявок в шаблон messages.html
-    return render_template('messages.html', requests=all_requests)
+@login_required
+def messages():
+    reqs = ClientRequest.query.order_by(ClientRequest.is_read.asc(), ClientRequest.date.desc()).all()
+    return render_template('messages.html', requests=reqs)
 
-# --- НОВЫЙ РОУТ: Пометить заявку как прочитанную/непрочитанную ---
-@app.route('/toggle_read/<int:request_id>', methods=['POST'])
-def toggle_read(request_id):
-    req = ClientRequest.query.get_or_404(request_id)
-    
-    try:
-        # Инвертируем статус прочтения
-        req.is_read = not req.is_read
-        db.session.commit()
-        
-        status_text = 'прочитана' if req.is_read else 'непрочитана'
-        flash(f'Заявка #{req.id} помечена как {status_text}.', 'info')
-    except Exception as e:
-        db.session.rollback()
-        flash(f'Ошибка при обновлении статуса: {e}', 'error')
-        
-    # Возвращаемся на страницу со списком заявок
-    return redirect(url_for('view_messages'))
+@app.route('/toggle_read/<int:req_id>', methods=['POST'])
+@login_required
+def toggle_read(req_id):
+    req = ClientRequest.query.get_or_404(req_id)
+    req.is_read = not req.is_read
+    db.session.commit()
+    return redirect(url_for('messages'))
 
-# --- НОВЫЙ РОУТ: Удаление заявки ---
-@app.route('/delete/<int:request_id>', methods=['POST'])
-def delete_request(request_id):
-    req = ClientRequest.query.get_or_404(request_id)
-    
-    try:
-        db.session.delete(req)
-        db.session.commit()
-        flash(f'Заявка #{request_id} от {req.name} успешно удалена.', 'warning')
-    except Exception as e:
-        db.session.rollback()
-        flash(f'Ошибка при удалении заявки: {e}', 'error')
-    
-    return redirect(url_for('view_messages'))
+@app.route('/delete/<int:req_id>', methods=['POST'])
+@login_required
+def delete_request(req_id):
+    req = ClientRequest.query.get_or_404(req_id)
+    db.session.delete(req)
+    db.session.commit()
+    return redirect(url_for('messages'))
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True)

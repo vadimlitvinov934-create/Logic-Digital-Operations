@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход LDO Admin</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f3f4f6; }
+        .login-box { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box;}
+        button { width: 100%; padding: 10px; background: #4F46E5; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        button:hover { background: #4338ca; }
+        h2 { text-align: center; color: #1F2937; margin-bottom: 1.5rem; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h2>LDO Admin</h2>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}<p style="color: red; text-align: center;">{{ messages[0] }}</p>{% endif %}
+        {% endwith %}
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            {{ form.username(placeholder="Логин админа") }}
+            {{ form.password(placeholder="Пароль") }}
+            {{ form.submit() }}
+        </form>
+        <div style="text-align: center; margin-top: 15px;">
+            <a href="{{ url_for('index') }}" style="color: #6b7280; text-decoration: none; font-size: 0.9rem;">← На главную</a>
+        </div>
+    </div>
+</body>
+</html>
